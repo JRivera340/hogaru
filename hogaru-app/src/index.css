@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paleta — luz de sol entrando a una casa recién limpiada, no el
+     cliché café-crema + terracota. Verde profundo = confianza/verificado,
+     ladrillo saturado = acción, oro apagado = valoraciones. */
+  --color-paper: #F1F4EE;
+  --color-paper-warm: #EAEEE3;
+  --color-surface: #FBFBF8;
+  --color-ink: #1E2A22;
+  --color-ink-soft: #46564C;
+  --color-pine: #2F5D50;
+  --color-pine-deep: #203F37;
+  --color-pine-soft: #DCE7DF;
+  --color-brick: #D6482E;
+  --color-brick-deep: #B23A24;
+  --color-gold: #C9992B;
+  --color-line: #D7DED3;
+
+  --font-display: "Fraunces", "Iowan Old Style", serif;
+  --font-body: "Karla", "Segoe UI", sans-serif;
+
+  --radius-stamp: 3px;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+  html {
+    color-scheme: light;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-pine);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Sello de "verificado": referencia al sello de cera / stamp de calidad,
+     no el check-badge azul genérico de SaaS. */
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
+    color: var(--color-pine-deep);
+    background: var(--color-pine-soft);
+    border: 1px solid color-mix(in srgb, var(--color-pine) 35%, transparent);
+    border-radius: var(--radius-stamp);
+    padding: 0.22rem 0.5rem 0.22rem 0.4rem;
+  }
+
+  .btn-primary {
+    background: var(--color-brick);
+    color: var(--color-surface);
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    transition: background-color 150ms ease, transform 150ms ease;
+  }
+  .btn-primary:hover {
+    background: var(--color-brick-deep);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .btn-primary:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-pine-deep);
+    border: 1.5px solid var(--color-pine);
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    transition: background-color 150ms ease;
+  }
+  .btn-secondary:hover {
+    background: var(--color-pine-soft);
+  }
+
+  .input {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    outline: none;
+  }
+  .input:focus-visible {
+    border-color: var(--color-pine);
+  }
+}

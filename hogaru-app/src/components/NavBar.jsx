@@ -2,7 +2,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../store/AuthContext'
 
 const links = [
-  { to: '/explorar', label: 'Explorar' },
+  { to: '/explorar', label: 'Para hogares' },
   { to: '/mis-reservas', label: 'Mis reservas' },
 ]
 
@@ -14,11 +14,12 @@ export default function NavBar() {
     logout()
     navigate('/')
   }
+
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-paper/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-        <NavLink to="/" className="font-display text-xl text-ink">
-          hogaru
+    <header className="sticky top-0 z-30 border-b border-line bg-white">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8">
+        <NavLink to="/" aria-label="Ir al inicio de Hogarú" className="shrink-0">
+          <img src="/hogaru-logo.svg" alt="Hogarú" className="h-8 w-auto sm:h-9" />
         </NavLink>
         <nav className="flex items-center gap-1 sm:gap-2">
           {links.map((l) => (
@@ -26,10 +27,8 @@ export default function NavBar() {
               key={l.to}
               to={l.to}
               className={({ isActive }) =>
-                `rounded-full px-3 py-2 text-sm font-medium transition-colors sm:px-4 ${
-                  isActive
-                    ? 'bg-pine-soft text-pine-deep'
-                    : 'text-ink-soft hover:bg-paper-warm'
+                `hidden rounded-full px-3 py-2 text-sm font-semibold sm:inline ${
+                  isActive ? 'text-pine' : 'text-ink hover:text-pine'
                 }`
               }
             >
@@ -44,20 +43,18 @@ export default function NavBar() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-full px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-warm"
+                className="rounded-full border border-pine px-4 py-1.5 text-sm font-semibold text-pine hover:bg-pine-soft"
               >
                 Salir
               </button>
             </span>
           ) : (
-            <span className="ml-1 flex items-center gap-1">
-              <Link to="/login" className="rounded-full px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-warm">
-                Ingresar
-              </Link>
-              <Link to="/registro" className="btn-primary !px-4 !py-2 text-sm">
-                Crear cuenta
-              </Link>
-            </span>
+            <Link
+              to="/login"
+              className="rounded-full border border-pine px-4 py-1.5 text-sm font-semibold text-pine hover:bg-pine-soft"
+            >
+              Iniciar sesión
+            </Link>
           )}
         </nav>
       </div>

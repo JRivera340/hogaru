@@ -4,21 +4,22 @@
   /* Paleta — luz de sol entrando a una casa recién limpiada, no el
      cliché café-crema + terracota. Verde profundo = confianza/verificado,
      ladrillo saturado = acción, oro apagado = valoraciones. */
-  --color-paper: #F1F4EE;
-  --color-paper-warm: #EAEEE3;
-  --color-surface: #FBFBF8;
-  --color-ink: #1E2A22;
-  --color-ink-soft: #46564C;
-  --color-pine: #2F5D50;
-  --color-pine-deep: #203F37;
-  --color-pine-soft: #DCE7DF;
-  --color-brick: #D6482E;
-  --color-brick-deep: #B23A24;
-  --color-gold: #C9992B;
-  --color-line: #D7DED3;
+  --color-paper: #ffffff;
+  --color-paper-warm: #f4f8fb;
+  --color-surface: #ffffff;
+  --color-ink: #3e4c56;
+  --color-ink-soft: #5c6b76;
+  --color-pine: #0094ff;
+  --color-pine-deep: #0076cc;
+  --color-pine-soft: #e8f5ff;
+  --color-brick: #0094ff;
+  --color-brick-deep: #007ad6;
+  --color-gold: #f5b400;
+  --color-line: #e3ebf1;
+  --color-sky: #d6f1ff;
 
-  --font-display: "Fraunces", "Iowan Old Style", serif;
-  --font-body: "Karla", "Segoe UI", sans-serif;
+  --font-display: "Open Sans", "Segoe UI", sans-serif;
+  --font-body: "Open Sans", "Segoe UI", sans-serif;
 
   --radius-stamp: 3px;
 }
@@ -38,8 +39,8 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   :focus-visible {
     outline: 2px solid var(--color-pine);

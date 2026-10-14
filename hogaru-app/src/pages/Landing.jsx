@@ -1,102 +1,123 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import DustLight from '../components/DustLight'
-import { professionals } from '../data/seed'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const spread = [professionals[0], professionals[2], professionals[4]]
+const cities = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga']
+
+const products = [
+  {
+    title: 'Aseo para hogares',
+    body: 'Mantenemos tu hogar impecable, con profesionales de limpieza capacitadas. Agenda por días.',
+  },
+  {
+    title: 'Aseo para empresas',
+    body: 'Limpieza integral para oficinas y locales, con continuidad operativa.',
+  },
+  {
+    title: 'Profesionales verificadas',
+    body: 'Ves quién llega, el precio y las valoraciones antes de reservar.',
+  },
+]
+
+const reviews = [
+  { quote: 'Me gustó el servicio y la aplicación te informa todo.', name: 'Paula Lizeth', place: 'Bogotá' },
+  { quote: 'Personal de limpieza con muy buena actitud, eficientes y puntuales.', name: 'Lucía Patricia', place: 'Bogotá' },
+  { quote: 'Excelente opción para servicio en casa. Personal eficiente y seguro.', name: 'Olga Lucía', place: 'Medellín' },
+]
 
 export default function Landing() {
-  return (
-    <div>
-      <section className="relative overflow-hidden border-b border-line">
-        <DustLight density={40} />
-        <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-          >
-            <h1 className="max-w-lg font-display text-4xl leading-[1.08] text-ink sm:text-5xl">
-              Tu casa, en manos que ya se ganaron la confianza de tus vecinos.
-            </h1>
-            <p className="mt-5 max-w-md text-base text-ink-soft sm:text-lg">
-              Reserva profesionales de aseo verificados en Bogotá, elige el horario que
-              te sirva y paga desde la app. Sin llamadas, sin adivinar quién te abre la puerta.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link to="/explorar" className="btn-primary">
-                Buscar profesional
-              </Link>
-              <Link to="/mis-reservas" className="btn-secondary">
-                Ver mis reservas
-              </Link>
-            </div>
-            <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-line pt-6">
-              <div>
-                <dt className="text-xs text-ink-soft">Profesionales</dt>
-                <dd className="font-display text-2xl text-ink">100% verificadas</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-ink-soft">Zona</dt>
-                <dd className="font-display text-2xl text-ink">Bogotá</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-ink-soft">Reserva</dt>
-                <dd className="font-display text-2xl text-ink">En minutos</dd>
-              </div>
-            </dl>
-          </motion.div>
+  const navigate = useNavigate()
+  const [city, setCity] = useState('')
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
-            className="relative mx-auto h-[420px] w-full max-w-sm sm:h-[480px]"
-          >
-            {/* Spread de tarjetas superpuestas — la disponibilidad real y
-                verificación de tres profesionales, no fotos decorativas. */}
-            <ProCard pro={spread[0]} className="left-0 top-0 z-10 rotate-[-6deg]" />
-            <ProCard pro={spread[1]} className="left-1/2 top-14 z-20 -translate-x-1/2 rotate-[3deg]" />
-            <ProCard pro={spread[2]} className="right-0 top-2 z-10 rotate-[7deg]" />
-          </motion.div>
+  function cotizar(event) {
+    event.preventDefault()
+    const query = city ? `?ciudad=${encodeURIComponent(city)}` : ''
+    navigate(`/explorar${query}`)
+  }
+
+  return (
+    <div className="bg-white text-ink">
+      <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute -right-16 top-6 hidden h-40 w-40 rounded-full border-[10px] border-pine/70 lg:block" />
+        <div className="pointer-events-none absolute bottom-10 right-[38%] hidden h-16 w-16 rounded-full border-[6px] border-pine/50 lg:block" />
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:py-16">
+          <div>
+            <h1 className="max-w-xl text-4xl font-bold leading-[1.15] text-[#3e4c56] sm:text-5xl">
+              ¡Somos empresa líder en servicios de aseo!
+            </h1>
+            <p className="mt-4 text-lg text-ink-soft">
+              Profesionales de limpieza para hogares y empresas.
+            </p>
+            <form
+              onSubmit={cotizar}
+              className="mt-8 max-w-md rounded-2xl border border-line bg-white p-5 shadow-sm"
+            >
+              <p className="border-b-2 border-pine pb-2 text-sm font-bold text-pine">Busco empleada</p>
+              <label className="mt-4 block text-sm text-ink-soft" htmlFor="city">
+                ¿En cuál ciudad te encuentras?
+              </label>
+              <select
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="mt-2 w-full rounded-lg border border-line bg-white px-3 py-3 text-sm text-ink outline-none focus:border-pine"
+              >
+                <option value="">Selecciona una ciudad</option>
+                {cities.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              <button type="submit" className="btn-primary mt-4 w-full">
+                Cotizar
+              </button>
+            </form>
+          </div>
+          <div className="relative mx-auto aspect-square w-full max-w-md">
+            <img
+              src="https://www.hogaru.com/assets/public_pages/homes/landing_home-5532ec58d2975f340256679b70f2edba0fd0c0bf66467a21a6b2d157dfd67a30.webp"
+              alt="Sala luminosa recién aseada"
+              className="h-full w-full rounded-full object-cover"
+            />
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
-        <div className="grid gap-8 sm:grid-cols-3">
-          {[
-            {
-              title: 'Verificación real',
-              body: 'Antecedentes revisados y referencias confirmadas antes de que alguien entre a tu casa.',
-            },
-            {
-              title: 'Precio claro',
-              body: 'Ves el precio desde antes de reservar. Nada se negocia en la puerta.',
-            },
-            {
-              title: 'Valoraciones honestas',
-              body: 'Solo puede calificar quien ya recibió el servicio, y queda visible para todos.',
-            },
-          ].map((f) => (
-            <div key={f.title} className="border-t-2 border-pine pt-4">
-              <h3 className="font-display text-lg text-ink">{f.title}</h3>
-              <p className="mt-2 text-sm text-ink-soft">{f.body}</p>
-            </div>
+      <section className="bg-sky py-14">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <h2 className="text-3xl font-bold text-[#3e4c56]">Nuestros productos</h2>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {products.map((p) => (
+              <article key={p.title} className="rounded-2xl bg-white p-5 shadow-sm">
+                <h3 className="text-lg font-bold text-[#3e4c56]">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{p.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
+        <h2 className="text-3xl font-bold text-[#3e4c56]">
+          Lo que nuestros clientes opinan sobre Hogarú
+        </h2>
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          {reviews.map((r) => (
+            <figure key={r.name} className="rounded-2xl border border-line p-5">
+              <figcaption className="text-sm font-bold text-pine">{r.name}</figcaption>
+              <blockquote className="mt-2 text-sm leading-relaxed text-ink">{r.quote}</blockquote>
+              <p className="mt-3 text-xs text-ink-soft">{r.place}</p>
+            </figure>
           ))}
         </div>
       </section>
-    </div>
-  )
-}
 
-function ProCard({ pro, className }) {
-  return (
-    <div
-      className={`absolute w-44 border border-line bg-surface p-2 shadow-xl shadow-ink/10 sm:w-52 ${className}`}
-    >
-      <img src={pro.photo} alt={pro.name} className="aspect-square w-full rounded-sm object-cover" />
-      <p className="mt-2 truncate font-display text-sm text-ink">{pro.name}</p>
-      <p className="stamp mt-1 !py-1 !text-[0.6rem]">Verificada</p>
+      <footer className="border-t border-line bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <img src="/hogaru-logo.svg" alt="Hogarú" className="h-8 w-auto" />
+          <p className="text-xs text-ink-soft">© 2026 Hogarú. Aseo para hogares y empresas.</p>
+        </div>
+      </footer>
     </div>
   )
 }

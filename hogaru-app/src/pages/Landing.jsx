@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const cities = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga']
 
@@ -115,6 +115,11 @@ export default function Landing() {
       <footer className="border-t border-line bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <img src="/hogaru-logo.svg" alt="Hogarú" className="h-8 w-auto" />
+          <nav className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-soft">
+            <Link to="/registro?rol=profesional" className="hover:text-pine">Ofrece tus servicios</Link>
+            <Link to="/pro/login" className="hover:text-pine">Soy profesional</Link>
+            <Link to="/admin/login" className="hover:text-pine">Administración</Link>
+          </nav>
           <p className="text-xs text-ink-soft">© 2026 Hogarú. Aseo para hogares y empresas.</p>
         </div>
       </footer>

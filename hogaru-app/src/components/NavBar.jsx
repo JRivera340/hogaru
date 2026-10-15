@@ -1,14 +1,20 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../store/AuthContext'
 
-const links = [
+const clientLinks = [
   { to: '/explorar', label: 'Para hogares' },
   { to: '/mis-reservas', label: 'Mis reservas' },
+]
+const proLinks = [{ to: '/pro', label: 'Mi panel' }]
+const guestLinks = [
+  { to: '/explorar', label: 'Para hogares' },
+  { to: '/pro/login', label: 'Soy profesional' },
 ]
 
 export default function NavBar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const links = !user ? guestLinks : user.role === 'profesional' ? proLinks : clientLinks
 
   function handleLogout() {
     logout()

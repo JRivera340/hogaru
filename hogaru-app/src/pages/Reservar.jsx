@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import MobileFab from '../components/MobileFab'
-import { professionals, services, dayLabels } from '../data/seed'
+import { services, dayLabels } from '../data/seed'
+import { getProfessional, isBookable } from '../store/proStore'
+import { isSlotTaken } from '../store/bookingStore'
 import { useAuth } from '../store/AuthContext'
 
 const steps = ['Horario', 'Dirección', 'Resumen']
@@ -10,19 +12,31 @@ export default function Reservar() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const pro = professionals.find((p) => p.id === id)
+  const pro = getProfessional(id)
 
   const [step, setStep] = useState(0)
-  const [service, setService] = useState(pro?.services[0] ?? '')
+  const [service, setService] = useState(pro?.services.find((s) => pro.pricing?.[s] > 0) ?? '')
   const [day, setDay] = useState('')
   const [time, setTime] = useState('')
   const [address, setAddress] = useState('')
   const [notes, setNotes] = useState('')
 
-  const canContinueStep0 = service && day && time
-  const canContinueStep1 = address.trim().length > 4
-
   const nextDate = useMemo(() => nextDateForDay(day), [day])
+  const canContinueStep0 = service && day && time && !isSlotTaken(id, nextDate, time)
+  const canContinueStep1 = address.trim().length > 4
+  const price = pro?.pricing?.[service] ?? 0
+
+
+  if (pro && !isBookable(pro)) {
+    return (
+      <div className="mx-auto max-w-2xl px-5 py-16 text-center">
+        <p className="text-ink-soft">{pro.name} todavía no publica tarifas y horarios.</p>
+        <Link to="/explorar" className="btn-secondary mt-4 inline-block">
+          Volver a explorar
+        </Link>
+      </div>
+    )
+  }
 
   if (!pro) {
     return (
@@ -48,7 +62,7 @@ export default function Reservar() {
           date: nextDate,
           address,
           notes,
-          price: pro.priceFrom,
+          price,
         },
       })
       return
@@ -88,7 +102,7 @@ export default function Reservar() {
             <div>
               <p className="mb-2 text-sm font-semibold text-ink">Servicio</p>
               <div className="flex flex-wrap gap-2">
-                {pro.services.map((sId) => (
+                {pro.services.filter((sId) => pro.pricing?.[sId] > 0).map((sId) => (
                   <button
                     key={sId}
                     type="button"
@@ -99,7 +113,7 @@ export default function Reservar() {
                         : 'border-line text-ink-soft'
                     }`}
                   >
-                    {services.find((s) => s.id === sId)?.label}
+                    {services.find((s) => s.id === sId)?.label} · ${pro.pricing[sId].toLocaleString('es-CO')}
                   </button>
                 ))}
               </div>
@@ -108,7 +122,7 @@ export default function Reservar() {
             <div>
               <p className="mb-2 text-sm font-semibold text-ink">Día</p>
               <div className="flex flex-wrap gap-2">
-                {Object.keys(pro.availability).map((d) => (
+                {Object.keys(pro.availability).filter((d) => pro.availability[d].length > 0).map((d) => (
                   <button
                     key={d}
                     type="button"
@@ -130,18 +144,26 @@ export default function Reservar() {
               <div>
                 <p className="mb-2 text-sm font-semibold text-ink">Franja horaria</p>
                 <div className="flex flex-wrap gap-2">
-                  {pro.availability[day].map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setTime(t)}
-                      className={`rounded-full border px-3 py-1.5 text-sm ${
-                        time === t ? 'border-pine bg-pine-soft text-pine-deep' : 'border-line text-ink-soft'
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
+                  {pro.availability[day].map((t) => {
+                    const taken = isSlotTaken(pro.id, nextDate, t)
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        disabled={taken}
+                        onClick={() => setTime(t)}
+                        className={`rounded-full border px-3 py-1.5 text-sm ${
+                          taken
+                            ? 'cursor-not-allowed border-line text-ink-soft/50 line-through'
+                            : time === t
+                              ? 'border-pine bg-pine-soft text-pine-deep'
+                              : 'border-line text-ink-soft'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -185,7 +207,7 @@ export default function Reservar() {
             <Row label="Día y hora" value={`${dayLabels[day]} · ${time} (${nextDate})`} />
             <Row label="Dirección" value={address} />
             <Row label="Cliente" value={user ? `${user.name} · ${user.email}` : ''} />
-            <Row label="Total a pagar" value={`$${pro.priceFrom.toLocaleString('es-CO')}`} strong />
+            <Row label="Total a pagar" value={`$${price.toLocaleString('es-CO')}`} strong />
           </dl>
         )}
       </div>
@@ -226,5 +248,6 @@ function nextDateForDay(day) {
   const diff = (target - now.getDay() + 7) % 7 || 7
   const result = new Date(now)
   result.setDate(now.getDate() + diff)
-  return result.toISOString().slice(0, 10)
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${result.getFullYear()}-${pad(result.getMonth() + 1)}-${pad(result.getDate())}`
 }

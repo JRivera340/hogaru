@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { professionals } from '../data/seed'
+import { getProfessional } from '../store/proStore'
 import { useAuth } from '../store/AuthContext'
-import { getBookings, saveReview } from '../store/bookingStore'
+import { getBookings, hasReviewForBooking, saveReview } from '../store/bookingStore'
 
 export default function Valorar() {
   const { bookingId } = useParams()
   const { user } = useAuth()
   const navigate = useNavigate()
   const booking = getBookings().find((b) => b.id === bookingId)
-  const pro = booking ? professionals.find((p) => p.id === booking.professionalId) : null
+  const pro = booking ? getProfessional(booking.professionalId) : null
 
   const [rating, setRating] = useState(0)
   const [hovered, setHovered] = useState(0)
@@ -39,12 +39,28 @@ export default function Valorar() {
     )
   }
 
+  if (!done && (booking.status !== 'completada' || hasReviewForBooking(booking.id))) {
+    return (
+      <div className="mx-auto max-w-md px-5 py-16 text-center">
+        <p className="text-ink-soft">
+          {booking.status !== 'completada'
+            ? 'Podrás valorar cuando la profesional marque el servicio como realizado.'
+            : 'Ya valoraste este servicio.'}
+        </p>
+        <Link to="/mis-reservas" className="btn-secondary mt-4 inline-block">
+          Volver a mis reservas
+        </Link>
+      </div>
+    )
+  }
+
   function submit(e) {
     e.preventDefault()
-    if (rating === 0) return
+    if (rating === 0 || hasReviewForBooking(booking.id)) return
     saveReview({
       bookingId: booking.id,
       professionalId: booking.professionalId,
+      userId: user.id,
       userName: user.name,
       rating,
       comment: comment.trim(),

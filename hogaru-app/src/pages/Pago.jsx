@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useLocation, useNavigate, Navigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { professionals, services, dayLabels } from '../data/seed'
+import { services, dayLabels } from '../data/seed'
+import { getProfessional } from '../store/proStore'
 import { useAuth } from '../store/AuthContext'
-import { saveBooking } from '../store/bookingStore'
+import { isSlotTaken, saveBooking } from '../store/bookingStore'
 
 export default function Pago() {
   const { state } = useLocation()
@@ -11,19 +12,28 @@ export default function Pago() {
   const navigate = useNavigate()
   const [processing, setProcessing] = useState(false)
   const [confirmed, setConfirmed] = useState(null)
+  const [slotError, setSlotError] = useState('')
   const [card, setCard] = useState({ number: '', name: '', exp: '', cvc: '' })
 
   if (!state) {
     return <Navigate to="/explorar" replace />
   }
 
-  const pro = professionals.find((p) => p.id === state.professionalId)
+  const pro = getProfessional(state.professionalId)
   const cardComplete =
     card.number.replace(/\s/g, '').length >= 12 && card.name && card.exp && card.cvc.length >= 3
 
   function handlePay(e) {
     e.preventDefault()
     if (!cardComplete || processing) return
+    if (!user.verified) {
+      setSlotError('Tu cuenta aún no está verificada.')
+      return
+    }
+    if (isSlotTaken(state.professionalId, state.date, state.time)) {
+      setSlotError('Alguien reservó esa franja mientras pagabas. Elige otro horario.')
+      return
+    }
     setProcessing(true)
     // Pago simulado — no hay proveedor real conectado en este MVP local.
     setTimeout(() => {
@@ -138,6 +148,14 @@ export default function Pago() {
           </Field>
         </div>
 
+        {slotError && (
+          <p className="text-sm text-brick">
+            {slotError}{' '}
+            <Link to={`/reservar/${state.professionalId}`} className="font-semibold underline">
+              Elegir otro horario
+            </Link>
+          </p>
+        )}
         <button type="submit" disabled={!cardComplete || processing} className="btn-primary w-full">
           <AnimatePresence mode="wait" initial={false}>
             <motion.span

@@ -20,7 +20,7 @@ export default function AdminLogin() {
 
   function submit(e) {
     e.preventDefault()
-    if (user === ADMIN_USER && pass === ADMIN_PASS) {
+    if (user.trim().toLowerCase() === ADMIN_USER && pass === ADMIN_PASS) {
       sessionStorage.setItem(SESSION_KEY, 'ok')
       navigate('/admin')
     } else {

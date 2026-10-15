@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { professionals, services, dayLabels } from '../data/seed'
+import { services, dayLabels } from '../data/seed'
+import { getProfessionals } from '../store/proStore'
+import useStorageVersion from '../store/useStorageVersion'
 import { useAuth } from '../store/AuthContext'
 import { getBookings, getReviews, updateBookingStatus } from '../store/bookingStore'
 
@@ -10,31 +12,32 @@ const statusLabel = {
   cancelada: 'Cancelada',
 }
 
+// Se vuelve a montar cuando otra pestaña cambia datos (p. ej. la profesional completa un servicio).
 export default function MisReservas() {
+  return <MisReservasView key={useStorageVersion()} />
+}
+
+function MisReservasView() {
   const { user } = useAuth()
-  const [, forceRefresh] = useState(0)
+  const [bookings, setBookings] = useState(() => loadBookings(user.id))
+  const professionals = getProfessionals()
+  const reviewedBookingIds = new Set(getReviews().map((r) => r.bookingId))
 
-  const bookings = useMemo(
-    () =>
-      getBookings()
-        .filter((b) => b.userId === user.id)
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
-    // refrescamos cuando cambia el contador
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [forceRefresh],
-  )
-  const reviews = getReviews()
-  const reviewedBookingIds = new Set(reviews.map((r) => r.bookingId))
-
-  function markCompleted(id) {
-    updateBookingStatus(id, 'completada')
-    forceRefresh((n) => n + 1)
+  function cancel(id) {
+    updateBookingStatus(id, 'cancelada')
+    setBookings(loadBookings(user.id))
   }
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8">
       <h1 className="font-display text-3xl text-ink">Mis reservas</h1>
       <p className="mt-1 text-sm text-ink-soft">{user.name} · {user.email}</p>
+
+      {!user.verified && (
+        <p className="mt-4 rounded-lg border border-dashed border-pine bg-pine-soft p-3 text-sm text-pine-deep">
+          Tu cuenta está pendiente de verificación. Podrás reservar cuando Hogarú la apruebe.
+        </p>
+      )}
 
       {bookings.length === 0 && (
         <div className="mt-10 rounded-lg border border-dashed border-line p-8 text-center">
@@ -74,13 +77,18 @@ export default function MisReservas() {
 
               <div className="mt-3 flex flex-wrap gap-2">
                 {b.status === 'confirmada' && (
-                  <button
-                    type="button"
-                    onClick={() => markCompleted(b.id)}
-                    className="btn-secondary !px-3 !py-1.5 text-xs"
-                  >
-                    Marcar como realizada
-                  </button>
+                  <>
+                    <span className="text-xs text-ink-soft">
+                      {pro?.name ?? 'La profesional'} marcará el servicio como realizado.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => cancel(b.id)}
+                      className="btn-secondary !px-3 !py-1.5 text-xs"
+                    >
+                      Cancelar reserva
+                    </button>
+                  </>
                 )}
                 {b.status === 'completada' && !alreadyReviewed && (
                   <Link to={`/valorar/${b.id}`} className="btn-primary !px-3 !py-1.5 text-xs">
@@ -97,4 +105,10 @@ export default function MisReservas() {
       </ul>
     </div>
   )
+}
+
+function loadBookings(userId) {
+  return getBookings()
+    .filter((b) => b.userId === userId)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 }

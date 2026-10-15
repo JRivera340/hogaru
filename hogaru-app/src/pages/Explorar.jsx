@@ -1,21 +1,23 @@
 import { useMemo, useState } from 'react'
 import ProfessionalCard from '../components/ProfessionalCard'
-import { professionals, services } from '../data/seed'
+import { services } from '../data/seed'
+import { getProfessionals, isBookable } from '../store/proStore'
 
 export default function Explorar() {
+  const professionals = useMemo(() => getProfessionals().filter(isBookable), [])
   const [serviceFilter, setServiceFilter] = useState('todos')
 
   const filtered = useMemo(() => {
     if (serviceFilter === 'todos') return professionals
     return professionals.filter((p) => p.services.includes(serviceFilter))
-  }, [serviceFilter])
+  }, [professionals, serviceFilter])
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8">
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-3xl text-ink">Profesionales en Bogotá</h1>
         <p className="text-sm text-ink-soft">
-          {filtered.length} disponibles · todas verificadas por Hogaru
+          {filtered.length} disponibles · las verificadas llevan sello de Hogarú
         </p>
       </div>
 

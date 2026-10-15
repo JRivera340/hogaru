@@ -23,6 +23,9 @@ export default function ProfessionalCard({ pro, index = 0 }) {
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        {!pro.verified && (
+          <span className="stamp absolute left-3 top-3 bg-surface/95">Nueva</span>
+        )}
         {pro.verified && (
           <span className="stamp absolute left-3 top-3 bg-surface/95">
             <svg width="12" height="12" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -44,7 +47,7 @@ export default function ProfessionalCard({ pro, index = 0 }) {
         <div className="mt-2 flex items-center gap-1.5 text-sm">
           <Stars value={rating} />
           <span className="text-ink-soft">
-            {rating} · {count} valoraciones
+            {count > 0 ? `${rating} · ${count} valoraciones` : 'Sin valoraciones aún'}
           </span>
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">

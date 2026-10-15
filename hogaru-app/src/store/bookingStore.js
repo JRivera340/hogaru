@@ -3,8 +3,8 @@
 
 import { seedBookings, seedReviews } from '../data/seed'
 
-const BOOKINGS_KEY = 'hogaru_bookings'
-const REVIEWS_KEY = 'hogaru_reviews'
+const BOOKINGS_KEY = 'hogaru_bookings_v2'
+const REVIEWS_KEY = 'hogaru_reviews_v2'
 
 function readList(key, fallback) {
   try {
@@ -37,11 +37,35 @@ export function saveBooking(booking) {
   return withId
 }
 
+// Solo una reserva confirmada puede pasar a completada o cancelada.
 export function updateBookingStatus(bookingId, status) {
   const list = getBookings()
-  const next = list.map((b) => (b.id === bookingId ? { ...b, status } : b))
+  const next = list.map((b) =>
+    b.id === bookingId && b.status === 'confirmada' && ['completada', 'cancelada'].includes(status)
+      ? { ...b, status }
+      : b,
+  )
   writeList(BOOKINGS_KEY, next)
   return next
+}
+
+export function getBookingsForProfessional(professionalId) {
+  return getBookings().filter((b) => b.professionalId === professionalId)
+}
+
+// Una franja está ocupada si hay una reserva no cancelada para ese profesional, fecha y hora.
+export function isSlotTaken(professionalId, date, time) {
+  return getBookings().some(
+    (b) =>
+      b.professionalId === professionalId &&
+      b.date === date &&
+      b.time === time &&
+      b.status !== 'cancelada',
+  )
+}
+
+export function hasReviewForBooking(bookingId) {
+  return getReviews().some((r) => r.bookingId === bookingId)
 }
 
 export function getReviews() {
@@ -54,6 +78,10 @@ export function saveReview(review) {
   const next = [...list, withId]
   writeList(REVIEWS_KEY, next)
   return withId
+}
+
+export function deleteReview(reviewId) {
+  writeList(REVIEWS_KEY, getReviews().filter((r) => r.id !== reviewId))
 }
 
 export function getReviewsForProfessional(professionalId) {

@@ -35,7 +35,8 @@ export default function OverviewTab({ onChange, goToUsers }) {
         <Stat label="Profesionales" value={users.filter((u) => u.role === 'profesional').length} />
         <Stat label="Pendientes de verificar" value={pending.length} tone={pending.length ? 'alert' : undefined} />
         <Stat label="Suspendidos" value={suspended.length} />
-        <Stat label="Reservas confirmadas" value={byStatus('confirmada')} />
+        <Stat label="Reservas por responder" value={byStatus('pendiente')} tone={byStatus('pendiente') ? 'alert' : undefined} />
+        <Stat label="Reservas confirmadas" value={byStatus('confirmada') + byStatus('en_camino')} />
         <Stat label="Reservas completadas" value={byStatus('completada')} />
         <Stat label="Ingresos completados" value={`$${revenue.toLocaleString('es-CO')}`} />
       </div>

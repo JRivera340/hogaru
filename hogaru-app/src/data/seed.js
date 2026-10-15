@@ -212,8 +212,8 @@ export const seedBookings = [
   { id: 'b3', professionalId: 'p2', userId: 'u2', userName: 'Valentina Suárez', service: 'aseo-profundo', day: 'jue', time: '08:00', date: '2026-10-22', address: 'Carrera 7 #116-20, Usaquén', status: 'confirmada', price: 60000, createdAt: '2026-10-11T11:10:00-05:00' },
   { id: 'b4', professionalId: 'p1', userId: 'u3', userName: 'Andrés Felipe Mora', service: 'aseo-profundo', day: 'lun', time: '08:00', date: '2026-10-12', address: 'Carrera 13 #63-40, Apto 302, Chapinero', status: 'completada', price: 70000, createdAt: '2026-10-07T19:05:00-05:00' },
   { id: 'b5', professionalId: 'p5', userId: 'u2', userName: 'Valentina Suárez', service: 'post-obra', day: 'mar', time: '10:00', date: '2026-10-13', address: 'Carrera 7 #116-20, Usaquén', status: 'completada', price: 90000, createdAt: '2026-10-08T10:40:00-05:00' },
-  { id: 'b6', professionalId: 'p4', userId: 'u3', userName: 'Andrés Felipe Mora', service: 'aseo-general', day: 'mie', time: '09:00', date: '2026-10-21', address: 'Carrera 13 #63-40, Apto 302, Chapinero', status: 'confirmada', price: 42000, createdAt: '2026-10-13T21:30:00-05:00' },
-  { id: 'b7', professionalId: 'p1', userId: 'u1', userName: 'Juan Camilo Restrepo', service: 'planchado', day: 'sab', time: '08:00', date: '2026-10-17', address: ADDR_U1, status: 'confirmada', price: 38000, createdAt: '2026-10-14T08:50:00-05:00' },
+  { id: 'b6', professionalId: 'p4', userId: 'u3', userName: 'Andrés Felipe Mora', service: 'aseo-general', day: 'jue', time: '08:00', date: '2026-10-15', address: 'Carrera 13 #63-40, Apto 302, Chapinero', status: 'en_camino', price: 42000, etaMinutes: 15, createdAt: '2026-10-13T21:30:00-05:00' },
+  { id: 'b7', professionalId: 'p1', userId: 'u1', userName: 'Juan Camilo Restrepo', service: 'planchado', day: 'sab', time: '08:00', date: '2026-10-17', address: ADDR_U1, status: 'pendiente', price: 38000, createdAt: '2026-10-14T08:50:00-05:00' },
   { id: 'b8', professionalId: 'p6', userId: 'u4', userName: 'Paola Jiménez', service: 'aseo-general', day: 'sab', time: '09:00', date: '2026-10-10', address: 'Calle 127 #15-20, Usaquén', status: 'cancelada', price: 38000, createdAt: '2026-10-05T13:15:00-05:00' },
   { id: 'b9', professionalId: 'p3', userId: 'u4', userName: 'Paola Jiménez', service: 'aseo-general', day: 'lun', time: '13:00', date: '2026-10-19', address: 'Calle 127 #15-20, Usaquén', status: 'confirmada', price: 40000, createdAt: '2026-10-12T17:00:00-05:00' },
   { id: 'b10', professionalId: 'p2', userId: 'u3', userName: 'Andrés Felipe Mora', service: 'post-obra', day: 'sab', time: '09:00', date: '2026-10-10', address: 'Carrera 13 #63-40, Apto 302, Chapinero', status: 'completada', price: 95000, createdAt: '2026-10-03T12:00:00-05:00' },
@@ -225,4 +225,11 @@ export const seedReviews = [
   { id: 'r3', bookingId: 'b4', professionalId: 'p1', userId: 'u3', userName: 'Andrés Felipe Mora', rating: 4, comment: 'Muy buen aseo profundo. Se demoró un poco más de lo acordado pero el resultado valió la pena.', createdAt: '2026-10-12T17:30:00-05:00' },
   { id: 'r4', bookingId: 'b5', professionalId: 'p5', userId: 'u2', userName: 'Valentina Suárez', rating: 5, comment: 'Dejó la casa lista para estrenar después de la obra. Cero polvo en los marcos.', createdAt: '2026-10-13T16:10:00-05:00' },
   { id: 'r5', bookingId: 'b10', professionalId: 'p2', userId: 'u3', userName: 'Andrés Felipe Mora', rating: 5, comment: 'Diana trae todo lo necesario y los productos no tienen olor fuerte. Repetiría.', createdAt: '2026-10-10T15:00:00-05:00' },
+]
+
+// Avisos de ejemplo para el cliente demo (reserva aceptada y servicio realizado).
+export const seedNotifications = [
+  { id: 'n1', userId: 'u1', bookingId: 'b1', type: 'completada', title: 'Servicio realizado', body: 'Marcela Ortiz terminó el servicio. Cuéntanos qué tal estuvo y valóralo.', createdAt: '2026-10-02T12:30:00-05:00', read: true },
+  { id: 'n2', userId: 'u3', bookingId: 'b6', type: 'en_camino', title: 'Tu profesional va en camino', body: 'Yolima Pérez va en camino y llega en unos 15 minutos.', createdAt: '2026-10-15T07:40:00-05:00', read: false },
+  { id: 'n3', userId: 'u2', bookingId: 'b3', type: 'confirmada', title: 'Reserva aceptada', body: 'Diana Cárdenas aceptó tu reserva del Jueves 2026-10-22, 08:00.', createdAt: '2026-10-11T15:00:00-05:00', read: false },
 ]

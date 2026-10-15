@@ -5,7 +5,7 @@
 
 import { seedUsers } from '../data/seed'
 import { createProfessional, deleteProfessional, updateProfessional } from './proStore'
-import { getBookings } from './bookingStore'
+import { OPEN_STATUSES, getBookings } from './bookingStore'
 
 export const USERS_KEY = 'hogaru_users_v2'
 const SESSION_KEY = 'hogaru_session'
@@ -188,7 +188,7 @@ export function listUsers() {
     return {
       ...u,
       bookingCount: mine.length,
-      activeBookingCount: mine.filter((b) => b.status === 'confirmada').length,
+      activeBookingCount: mine.filter((b) => OPEN_STATUSES.includes(b.status)).length,
     }
   })
 }
@@ -225,11 +225,11 @@ export function resetUserPassword(id, password) {
 export function deleteUser(id) {
   const user = getUsers().find((u) => u.id === id)
   if (!user) throw new Error('No encontramos ese usuario.')
-  const open = userBookings(user, getBookings()).filter((b) => b.status === 'confirmada')
+  const open = userBookings(user, getBookings()).filter((b) => OPEN_STATUSES.includes(b.status))
   if (open.length > 0) {
     const plural = open.length > 1
     throw new Error(
-      `Tiene ${open.length} reserva${plural ? 's' : ''} confirmada${plural ? 's' : ''}. Cancélala${plural ? 's' : ''} antes de eliminar la cuenta.`,
+      `Tiene ${open.length} reserva${plural ? 's' : ''} activa${plural ? 's' : ''}. Cancélala${plural ? 's' : ''} antes de eliminar la cuenta.`,
     )
   }
   if (user.professionalId) deleteProfessional(user.professionalId)

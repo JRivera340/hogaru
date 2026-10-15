@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLocation, useNavigate, Navigate, Link } from 'react-router-dom'
+import { useLocation, Navigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { services, dayLabels } from '../data/seed'
 import { getProfessional } from '../store/proStore'
@@ -9,7 +9,6 @@ import { isSlotTaken, saveBooking } from '../store/bookingStore'
 export default function Pago() {
   const { state } = useLocation()
   const { user } = useAuth()
-  const navigate = useNavigate()
   const [processing, setProcessing] = useState(false)
   const [confirmed, setConfirmed] = useState(null)
   const [slotError, setSlotError] = useState('')
@@ -47,7 +46,7 @@ export default function Pago() {
         date: state.date,
         address: state.address,
         notes: state.notes,
-        status: 'confirmada',
+        status: 'pendiente',
         price: state.price,
         createdAt: new Date().toISOString(),
       })
@@ -69,9 +68,9 @@ export default function Pago() {
             <path d="M5 13l4 4L19 7" stroke="#2F5D50" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </motion.div>
-        <h1 className="mt-5 font-display text-2xl text-ink">Reserva confirmada</h1>
+        <h1 className="mt-5 font-display text-2xl text-ink">Reserva enviada</h1>
         <p className="mt-2 text-sm text-ink-soft">
-          Se envió la confirmación a ti y a {pro?.name}. Ambos pueden verla en sus reservas.
+          {pro?.name} recibió tu solicitud y te avisará aquí cuando la acepte. Verás el aviso en la campana y en tus reservas.
         </p>
 
         <dl className="mt-6 w-full divide-y divide-line rounded-lg border border-line bg-surface text-left text-sm">

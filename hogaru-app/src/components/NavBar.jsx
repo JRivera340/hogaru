@@ -1,11 +1,15 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../store/AuthContext'
+import NotificationBell from './NotificationBell'
 
 const clientLinks = [
   { to: '/explorar', label: 'Para hogares' },
   { to: '/mis-reservas', label: 'Mis reservas' },
 ]
-const proLinks = [{ to: '/pro', label: 'Mi panel' }]
+const proLinks = [
+  { to: '/pro', label: 'Mi panel' },
+  { to: '/pro/ayuda', label: 'Ayuda' },
+]
 const guestLinks = [
   { to: '/explorar', label: 'Para hogares' },
   { to: '/pro/login', label: 'Soy profesional' },
@@ -41,6 +45,7 @@ export default function NavBar() {
               {l.label}
             </NavLink>
           ))}
+          {user?.role === 'cliente' && <NotificationBell userId={user.id} />}
           {user ? (
             <span className="ml-1 flex items-center gap-2">
               <span className="hidden max-w-28 truncate text-sm font-semibold text-ink sm:inline">

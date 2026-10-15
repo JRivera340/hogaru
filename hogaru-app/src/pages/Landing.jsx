@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Stars from '../components/Stars'
 
 const cities = ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga']
 
@@ -19,9 +20,9 @@ const products = [
 ]
 
 const reviews = [
-  { quote: 'Me gustó el servicio y la aplicación te informa todo.', name: 'Paula Lizeth', place: 'Bogotá' },
-  { quote: 'Personal de limpieza con muy buena actitud, eficientes y puntuales.', name: 'Lucía Patricia', place: 'Bogotá' },
-  { quote: 'Excelente opción para servicio en casa. Personal eficiente y seguro.', name: 'Olga Lucía', place: 'Medellín' },
+  { quote: 'Me gustó el servicio y la aplicación te informa todo.', name: 'Paula Lizeth', place: 'Bogotá', rating: 5 },
+  { quote: 'Personal de limpieza con muy buena actitud, eficientes y puntuales.', name: 'Lucía Patricia', place: 'Bogotá', rating: 5 },
+  { quote: 'Excelente opción para servicio en casa. Personal eficiente y seguro.', name: 'Olga Lucía', place: 'Medellín', rating: 5 },
 ]
 
 export default function Landing() {
@@ -105,6 +106,9 @@ export default function Landing() {
           {reviews.map((r) => (
             <figure key={r.name} className="rounded-2xl border border-line p-5">
               <figcaption className="text-sm font-bold text-pine">{r.name}</figcaption>
+              <div className="mt-1.5">
+                <Stars value={r.rating} size="text-lg" />
+              </div>
               <blockquote className="mt-2 text-sm leading-relaxed text-ink">{r.quote}</blockquote>
               <p className="mt-3 text-xs text-ink-soft">{r.place}</p>
             </figure>

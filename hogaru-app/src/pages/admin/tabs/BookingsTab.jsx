@@ -2,9 +2,9 @@ import { useState } from 'react'
 import ConfirmDialog from '../../../components/ConfirmDialog'
 import { services, dayLabels } from '../../../data/seed'
 import { getProfessionals } from '../../../store/proStore'
-import { getBookings, updateBookingStatus } from '../../../store/bookingStore'
+import { OPEN_STATUSES, getBookings, statusLabel, updateBookingStatus } from '../../../store/bookingStore'
 
-const statuses = ['todos', 'confirmada', 'completada', 'cancelada']
+const statuses = ['todos', 'pendiente', 'confirmada', 'en_camino', 'completada', 'rechazada', 'cancelada']
 
 export default function BookingsTab({ onChange }) {
   const [bookings, setBookings] = useState(() => getBookings())
@@ -19,7 +19,7 @@ export default function BookingsTab({ onChange }) {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 
   function cancel() {
-    updateBookingStatus(toCancel.id, 'cancelada')
+    updateBookingStatus(toCancel.id, 'cancelada', { by: 'admin' })
     setBookings(getBookings())
     setToCancel(null)
     onChange()
@@ -34,11 +34,11 @@ export default function BookingsTab({ onChange }) {
               key={s}
               type="button"
               onClick={() => setStatus(s)}
-              className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${
+              className={`rounded-full border px-3 py-1 text-xs font-medium ${
                 status === s ? 'border-pine bg-pine-soft text-pine-deep' : 'border-line text-ink-soft hover:border-pine'
               }`}
             >
-              {s}
+              {s === 'todos' ? 'Todos' : statusLabel[s]}
             </button>
           ))}
         </div>
@@ -82,11 +82,11 @@ export default function BookingsTab({ onChange }) {
                     {dayLabels[b.day]} {b.date}, {b.time}
                   </td>
                   <td className="py-2.5 pr-4">
-                    <span className="rounded-full bg-paper-warm px-2 py-0.5 text-xs capitalize text-ink-soft">{b.status}</span>
+                    <span className="rounded-full bg-paper-warm px-2 py-0.5 text-xs text-ink-soft">{statusLabel[b.status] ?? b.status}</span>
                   </td>
                   <td className="py-2.5 pr-4 text-ink-soft">${b.price.toLocaleString('es-CO')}</td>
                   <td className="py-2.5">
-                    {b.status === 'confirmada' && (
+                    {OPEN_STATUSES.includes(b.status) && (
                       <button
                         type="button"
                         onClick={() => setToCancel(b)}

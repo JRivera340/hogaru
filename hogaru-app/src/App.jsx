@@ -12,6 +12,7 @@ import Login from './pages/Login'
 import Registro from './pages/Registro'
 import ProLogin from './pages/pro/ProLogin'
 import ProDashboard from './pages/pro/ProDashboard'
+import ProHelp from './pages/pro/ProHelp'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 
@@ -64,6 +65,7 @@ export default function App() {
         <Route path="/mis-reservas" element={<RequireAuth><MisReservas /></RequireAuth>} />
         <Route path="/pro/login" element={<ProLogin />} />
         <Route path="/pro" element={<RequireAuth role="profesional"><ProDashboard /></RequireAuth>} />
+        <Route path="/pro/ayuda" element={<RequireAuth role="profesional"><ProHelp /></RequireAuth>} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />

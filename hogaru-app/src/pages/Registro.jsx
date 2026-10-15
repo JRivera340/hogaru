@@ -48,6 +48,14 @@ export default function Registro() {
           : 'Sin llamadas ni papeleo: con tu cuenta reservas, pagas y valoras en minutos.'}
       </p>
 
+      {isPro && (
+        <ol className="mt-4 space-y-1 rounded-lg bg-paper-warm p-3 text-sm text-ink-soft">
+          <li><span className="font-semibold text-ink">1.</span> Crea tu cuenta con estos datos.</li>
+          <li><span className="font-semibold text-ink">2.</span> Completa tu perfil: precio, horas y fotos de trabajos.</li>
+          <li><span className="font-semibold text-ink">3.</span> Recibe reservas y avisa a las familias desde tu panel.</li>
+        </ol>
+      )}
+
       <div className="mt-6 grid grid-cols-2 gap-2" role="radiogroup" aria-label="Tipo de cuenta">
         {roles.map((r) => (
           <button

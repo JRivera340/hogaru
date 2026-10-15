@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 
 // MVP local: credenciales fijas en código, sin backend de autenticación.
-const ADMIN_USER = 'admin'
+const ADMIN_USER = 'admin@hogaru.com'
 const ADMIN_PASS = 'hogaru2026'
 const SESSION_KEY = 'hogaru_admin_session'
 
@@ -35,8 +35,8 @@ export default function AdminLogin() {
 
       <form onSubmit={submit} className="mt-6 space-y-4">
         <label className="block">
-          <span className="mb-1 block text-sm font-semibold text-ink">Usuario</span>
-          <input value={user} onChange={(e) => setUser(e.target.value)} className="input" autoFocus />
+          <span className="mb-1 block text-sm font-semibold text-ink">Correo</span>
+          <input type="email" value={user} onChange={(e) => setUser(e.target.value)} className="input" autoFocus />
         </label>
         <label className="block">
           <span className="mb-1 block text-sm font-semibold text-ink">Contraseña</span>
@@ -51,7 +51,7 @@ export default function AdminLogin() {
         <button type="submit" className="btn-primary w-full">
           Entrar
         </button>
-        <p className="text-xs text-ink-soft">Demo local: admin / hogaru2026</p>
+        <p className="text-xs text-ink-soft">Demo local: admin@hogaru.com / hogaru2026</p>
       </form>
     </div>
   )
